@@ -176,3 +176,9 @@ bash pd_example/kill_server.sh
 - **延迟降低**: 每个令牌生成时间减少32.32%，令牌间延迟减少28.94%
 - **效率提升**: 基准测试完成时间减少17.61%
 
+## 参考文献
+
+本项目的分离式预填充-解码架构设计参考了以下研究：
+
+- **DistServe**: [DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving](https://github.com/LLMServe/DistServe)
+

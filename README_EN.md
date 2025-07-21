@@ -166,3 +166,9 @@ The following table shows the performance comparison between Disaggregated Prefi
 - **Throughput Improvement**: 21.60% increase in request throughput, 21.14% increase in total token throughput
 - **Latency Reduction**: 32.32% reduction in time per output token, 28.94% reduction in inter-token latency
 - **Efficiency Gain**: 17.61% reduction in benchmark completion time
+
+## References
+
+The disaggregated prefill-decode architecture design of this project is inspired by the following research:
+
+- **DistServe**: [DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving](https://github.com/LLMServe/DistServe)
