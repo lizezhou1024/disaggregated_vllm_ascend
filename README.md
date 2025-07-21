@@ -7,7 +7,7 @@
 
 ---
 
-# 分离式预填充解码vLLM昇腾版
+# prefill decode 分离vLLM昇腾版
 
 ## 项目简介
 
