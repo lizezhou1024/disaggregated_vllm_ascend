@@ -10,12 +10,7 @@ This project is a Disaggregated Prefill-Decode vLLM implementation running on Hu
 - **Tensor Parallelism (TP)**: Supports tensor parallelism technology to improve model inference efficiency
 - **Prefill-Decode Separation (PD)**: Supports separate deployment and optimization of prefill and decode stages
 
-### Default Configuration
-- **Total NPUs**: 8 NPU cards (tensor-parallel-size=8)
-- **Prefill NPUs**: 4 NPU cards dedicated to the prefill stage
-- **Decode NPUs**: 4 NPU cards dedicated to the decode stage
 
-This architectural design enables better hardware resource utilization, improved inference throughput and response speed, making it particularly suitable for large-scale language model online inference services.
 
 # Build Environment
 You can use the docker image if your environment is Ascend 910B, which comes with pre-configured environment dependencies: vllm-ascend: v0.7.3-dev
@@ -149,13 +144,19 @@ bash pd_example/kill_server.sh
 
 The following table shows the performance comparison between Disaggregated Prefill-Decode architecture (PD Version) and traditional vLLM Tensor Parallelism (TP=8):
 
-**Test Model**: DeepSeek-R1-Distill-Qwen-32B
-
 | Version | Benchmark Duration (s) | Mean TTFT (ms) | Median TTFT (ms) | P99 TTFT (ms) | Mean TPOT (ms) | Median TPOT (ms) | P99 TPOT (ms) | Mean ITL (ms) | Median ITL (ms) | P99 ITL (ms) | Request Throughput (req/s) | Output Token Throughput (tok/s) | Total Token Throughput (tok/s) |
 |---------|----------------------|----------------|------------------|---------------|----------------|------------------|---------------|---------------|-----------------|--------------|---------------------------|--------------------------------|-------------------------------|
 | PD Version | 101.51 | 293.34 | 294.72 | 454.66 | 137.62 | 131.97 | 258.57 | 115.40 | 99.60 | 331.31 | 1.97 | 421.38 | 847.74 |
 | vLLM TP=8 | 123.21 | 292.91 | 288.79 | 446.85 | 203.34 | 189.29 | 326.60 | 162.39 | 134.57 | 644.48 | 1.62 | 348.55 | 699.81 |
 | Percentage Difference | -17.61% | +0.15% | +2.05% | +1.75% | -32.32% | -30.28% | -20.83% | -28.94% | -25.99% | -48.59% | +21.60% | +20.89% | +21.14% |
+
+### Default Configuration
+- **Test Model**: DeepSeek-R1-Distill-Qwen-32B
+- **Total NPUs**: 8 NPU cards (tensor-parallel-size=8)
+- **Prefill NPUs**: 4 NPU cards dedicated to the prefill stage
+- **Decode NPUs**: 4 NPU cards dedicated to the decode stage
+
+This architectural design enables better hardware resource utilization, improved inference throughput and response speed, making it particularly suitable for large-scale language model online inference services.
 
 ### Performance Metrics Explanation
 - **TTFT (Time To First Token)**: Time from request start to generating the first token
@@ -167,8 +168,15 @@ The following table shows the performance comparison between Disaggregated Prefi
 - **Latency Reduction**: 32.32% reduction in time per output token, 28.94% reduction in inter-token latency
 - **Efficiency Gain**: 17.61% reduction in benchmark completion time
 
-## References
-
-The disaggregated prefill-decode architecture design of this project is inspired by the following research:
-
-- **DistServe**: [DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving](https://github.com/LLMServe/DistServe)
+## Citation
+If you use DistServe for your research, please cite our [paper](https://arxiv.org/abs/2401.09670):
+```
+@misc{zhong2024distserve,
+      title={DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving}, 
+      author={Yinmin Zhong and Shengyu Liu and Junda Chen and Jianbo Hu and Yibo Zhu and Xuanzhe Liu and Xin Jin and Hao Zhang},
+      year={2024},
+      eprint={2401.09670},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC}
+}
+```

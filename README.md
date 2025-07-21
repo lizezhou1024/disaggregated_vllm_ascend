@@ -19,10 +19,7 @@
 - **张量并行**: 支持张量并行技术，提高模型推理效率
 - **预填充解码分离**: 支持预填充和解码阶段的分离部署和优化
 
-### 默认配置
-- **总卡数**: 8张NPU卡（tensor-parallel-size=8）
-- **预填充卡数**: 4张NPU卡专门用于预填充阶段
-- **解码卡数**: 4张NPU卡专门用于解码阶段
+
 
 这种架构设计能够更好地利用硬件资源，提高推理吞吐量和响应速度，特别适合大规模语言模型的在线推理服务。
 
@@ -158,27 +155,37 @@ bash pd_example/kill_server.sh
 
 下表展示了分离式预填充解码架构（PD分离版）与传统vLLM张量并行（TP=8）的性能对比：
 
-**测试模型**: DeepSeek-R1-Distill-Qwen-32B
 
-| 版本 | 基准测试时长 (s) | 平均TTFT (ms) | 中位数TTFT (ms) | P99 TTFT (ms) | 平均TPOT (ms) | 中位数TPOT (ms) | P99 TPOT (ms) | 平均ITL (ms) | 中位数ITL (ms) | P99 ITL (ms) | 请求吞吐量 (req/s) | 输出令牌吞吐量 (tok/s) | 总令牌吞吐量 (tok/s) |
+| 版本 | 基准测试时长 (s) | 平均TTFT (ms) | 中位数TTFT (ms) | P99 TTFT (ms) | 平均TPOT (ms) | 中位数TPOT (ms) | P99 TPOT (ms) | 平均ITL (ms) | 中位数ITL (ms) | P99 ITL (ms) | 请求吞吐量 (req/s) | 输出词元吞吐量 (tok/s) | 总词元吞吐量 (tok/s) |
 |------|----------------|--------------|--------------|--------------|--------------|--------------|--------------|--------------|--------------|--------------|-----------------|------------------|-----------------| 
 | PD 分离版 | 101.51 | 293.34 | 294.72 | 454.66 | 137.62 | 131.97 | 258.57 | 115.40 | 99.60 | 331.31 | 1.97 | 421.38 | 847.74 |
 | vLLM TP=8 | 123.21 | 292.91 | 288.79 | 446.85 | 203.34 | 189.29 | 326.60 | 162.39 | 134.57 | 644.48 | 1.62 | 348.55 | 699.81 |
 | 百分比差异 | -17.61% | +0.15% | +2.05% | +1.75% | -32.32% | -30.28% | -20.83% | -28.94% | -25.99% | -48.59% | +21.60% | +20.89% | +21.14% |
+### 默认配置
+- **测试模型**: DeepSeek-R1-Distill-Qwen-32B
+- **总卡数**: 8张NPU卡（tensor-parallel-size=8）
+- **预填充卡数**: 4张NPU卡专门用于预填充阶段
+- **解码卡数**: 4张NPU卡专门用于解码阶段
 
 ### 性能指标说明
-- **TTFT (Time To First Token)**: 从请求开始到生成第一个令牌的时间
-- **TPOT (Time Per Output Token)**: 每个输出令牌的生成时间
-- **ITL (Inter-Token Latency)**: 令牌间延迟
+- **TTFT (Time To First Token)**: 从请求开始到生成第一个词元的时间
+- **TPOT (Time Per Output Token)**: 每个输出词元的生成时间
+- **ITL (Inter-Token Latency)**: 词元间延迟
 
 ### 关键优势
-- **吞吐量提升**: 请求吞吐量提升21.60%，总令牌吞吐量提升21.14%
-- **延迟降低**: 每个令牌生成时间减少32.32%，令牌间延迟减少28.94%
+- **吞吐量提升**: 请求吞吐量提升21.60%，总词元吞吐量提升21.14%
+- **延迟降低**: 每个词元生成时间减少32.32%，词元间延迟减少28.94%
 - **效率提升**: 基准测试完成时间减少17.61%
 
-## 参考文献
-
-本项目的分离式预填充-解码架构设计参考了以下研究：
-
-- **DistServe**: [DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving](https://github.com/LLMServe/DistServe)
-
+## 引用
+如果您在研究中使用了 DistServe，请引用我们的[论文](https://arxiv.org/abs/2401.09670):
+```
+@misc{zhong2024distserve,
+      title={DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving}, 
+      author={Yinmin Zhong and Shengyu Liu and Junda Chen and Jianbo Hu and Yibo Zhu and Xuanzhe Liu and Xin Jin and Hao Zhang},
+      year={2024},
+      eprint={2401.09670},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC}
+}
+```
